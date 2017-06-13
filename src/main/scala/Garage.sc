@@ -5,8 +5,8 @@ abstract class Person(val firstName: String,
                       var addressLine2: String,
                       var addressLine3: String,
                       var postCode: String,
-                      var email: String,
-                      var phoneNumber: String) {
+                      var phoneNumber: String,
+                      var email: String) {
 
 }
 
@@ -79,6 +79,7 @@ class Car(id: Int,
 
 class Garage(var isOpen: Boolean = false) {
   val vehicleArrayBuffer = scala.collection.mutable.ArrayBuffer.empty[Vehicle]
+  val employeeArrayBuffer = scala.collection.mutable.ArrayBuffer.empty[Employee]
 
   def addVehicle(vehicle: Vehicle): Unit = {
     vehicleArrayBuffer += vehicle
@@ -107,20 +108,6 @@ class Garage(var isOpen: Boolean = false) {
 
   }
 
-  def printContents(): Unit = {
-    if (vehicleArrayBuffer.isEmpty) println("No vehicles in garage.")
-    else
-      println("Vehicles:")
-    vehicleArrayBuffer.foreach(println)
-
-    if (employeeArrayBuffer.isEmpty) println("No employees in garage.")
-    else
-      println("Employees:")
-    employeeArrayBuffer.foreach(println)
-  }
-
-  val employeeArrayBuffer = scala.collection.mutable.ArrayBuffer.empty[Employee]
-
   def addEmployee(employee: Employee): Unit = {
     employeeArrayBuffer += employee
   }
@@ -133,8 +120,25 @@ class Garage(var isOpen: Boolean = false) {
     this.isOpen = false
   }
 
+  def printContents(): Unit = {
+    if (vehicleArrayBuffer.isEmpty) println("No vehicles in garage.")
+    else
+      println("Vehicles:")
+    vehicleArrayBuffer.foreach(println)
 
+    if (employeeArrayBuffer.isEmpty) println("No employees in garage.")
+    else
+      println("Employees:")
+    employeeArrayBuffer.foreach(println)
+  }
 }
+
+class Part(val name: String, val price: Int){
+  var isBroken: Boolean = false
+}
+
+val fanBelt = new Part("fanbelt", 10)
+val screw = new Part ("Screw", 2)
 
 val employee1 = new Employee("Adam", "Dye", "15/02/1993", "808", "The Heart,", "Salford", "M50 T36", "adamdye@email.com", "07935378321", 101, "Director")
 
