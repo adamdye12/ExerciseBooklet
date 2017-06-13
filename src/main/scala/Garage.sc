@@ -47,7 +47,8 @@ abstract class Vehicle(val id: Int,
                        val model: String,
                        val reg: String,
                        var tyres: Int,
-                       var colour: String) {
+                       var colour: String,
+                       var repaired: Boolean) {
 
 }
 
@@ -55,8 +56,9 @@ class Bike(id: Int,
            model: String,
            reg: String,
            tyres: Int,
-           colour: String
-          ) extends Vehicle(id, model, reg, tyres, colour) {
+           colour: String,
+           repaired: Boolean
+          ) extends Vehicle(id, model, reg, tyres, colour, repaired) {
   override def toString: String = {
     s"Model: $model. Registration Number: $reg. Number of Tyres: $tyres. Colour: $colour"
   }
@@ -67,57 +69,96 @@ class Car(id: Int,
           reg: String,
           tyres: Int,
           colour: String,
+          repaired: Boolean,
           val doors: Int
-         ) extends Vehicle(id, model, reg, tyres, colour) {
+         ) extends Vehicle(id, model, reg, tyres, colour, repaired) {
   override def toString: String = {
     s"Model: $model. Registration Number: $reg. Number of Tyres: $tyres. Colour: $colour"
   }
 }
 
-class Garage() {
+class Garage(var isOpen: Boolean = false) {
   val vehicleArrayBuffer = scala.collection.mutable.ArrayBuffer.empty[Vehicle]
-
 
   def addVehicle(vehicle: Vehicle): Unit = {
     vehicleArrayBuffer += vehicle
   }
 
-  def printVehicles(): Unit = {
-    vehicleArrayBuffer.foreach(println)
+  def removeVehicleId(id: Int): Unit = {
+    vehicleArrayBuffer.foreach(x => if (x.id == id) {
+      vehicleArrayBuffer -= x
+      return
+    })
   }
 
+  def removeVehicleType(vehicleType: String) = vehicleType match {
+    case "Car" => vehicleArrayBuffer.foreach(x => if (x.isInstanceOf[Car]) vehicleArrayBuffer -= x)
+    case "Bike" => vehicleArrayBuffer.foreach(x => if (x.isInstanceOf[Bike]) vehicleArrayBuffer -= x)
+    case _ => println("Please remove either a car or a bike.")
+  }
+
+  def repairVehicle(vehicle: Vehicle): Unit = {
+    if (vehicle.repaired) {
+      println("The vehicle has been repaired.")
+    }
+    else {
+      println("The vehicle has not been repaired.")
+    }
+
+  }
+
+  def printContents(): Unit = {
+    if (vehicleArrayBuffer.isEmpty) println("No vehicles in garage.")
+    else
+      println("Vehicles:")
+    vehicleArrayBuffer.foreach(println)
+
+    if (employeeArrayBuffer.isEmpty) println("No employees in garage.")
+    else
+      println("Employees:")
+    employeeArrayBuffer.foreach(println)
+  }
 
   val employeeArrayBuffer = scala.collection.mutable.ArrayBuffer.empty[Employee]
 
-
   def addEmployee(employee: Employee): Unit = {
     employeeArrayBuffer += employee
+  }
 
+  def open(): Unit = {
+    this.isOpen = true
+  }
+
+  def close(): Unit = {
+    this.isOpen = false
   }
 
 
-  def printEmployees(): Unit = {
-    employeeArrayBuffer.foreach(println)
-  }
 }
 
 val employee1 = new Employee("Adam", "Dye", "15/02/1993", "808", "The Heart,", "Salford", "M50 T36", "adamdye@email.com", "07935378321", 101, "Director")
 
 val customer1 = new Customer("James", "Gallagher", "17/08/1995", "26", "Manc Road", "Manchester", "M06 L45", "jamesgallaghere@email.com", "0765287931", 236)
 
-val bike1 = new Bike(101,"Yamaha M697", "YU65 M5G", 2, "Black")
+val bike1 = new Bike(101, "Yamaha M697", "YU65 M5G", 2, "Black", true)
 
-val car1 = new Car(201,"Renault Clio", "JY15", 4, "Blue", 5)
+val car1 = new Car(201, "Renault Clio", "JY15", 4, "Blue", false, 5)
 
-val garage = new Garage
+val garage = new Garage()
+
 
 garage.addVehicle(car1)
 garage.addVehicle(bike1)
 
-garage.printVehicles()
+/*garage.addEmployee(employee1)
 
-garage.addEmployee(employee1)
+garage.removeVehicleId(201)
 
-garage.printEmployees()
+garage.removeVehicleType("Car")*/
 
+garage.repairVehicle(bike1)
 
+garage.printContents()
+
+garage.open()
+println(garage.isOpen)
