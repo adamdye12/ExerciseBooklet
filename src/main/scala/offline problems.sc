@@ -55,12 +55,12 @@ println("  ---")
 println("   -")
 
 //Task 10
-println("   /\ ")
-println("  /  \ ")
-println(" /    \  ")
-println(" \    / ")
-println("  \  / " )
-println("   \/ ")
+println("   /\\")
+println("  /  \\ ")
+println(" /    \\  ")
+println(" \    // ")
+println("  \  // " )
+println("   \// ")
 
 
 
