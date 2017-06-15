@@ -7,46 +7,46 @@ val garage = new Garage()
 
 val fanBelt = new Part("fanbelt")
 val screw = new Part("Screw")
-val gearbox = new Part ("Gearbox")
-val exhaust= new Part ("Exhaust")
-val key = new Part ("Key")
-val transmission = new Part ("Transmission")
-val fuelTank = new Part ("Fuel Tank")
-val indicator = new Part ("Indicators")
-val brakeLight = new Part ("Brake Light")
-val battery = new Part ("Battery")
-val suspension = new Part ("Suspension")
-val filtration = new Part ("Filtration")
-val brakes = new Part ("Brakes")
-val pistonRing = new Part ("Piston Ring")
-val sumpPlug = new Part ("Sump Plug")
-val timingBelt = new Part ("Timing Belt")
-val oilPump = new Part ("Oil Pump")
-val turboCharger = new Part ("Turbo Charger")
-val pulley = new Part ("Pulley")
-val headBolt = new Part ("Head Bolt")
-val fuelInjector = new Part ("Fuel Injector")
-val starterMotor = new Part ("Starter Motor")
-val alternator = new Part ("Alternator")
-val rearAxle  = new Part ("Rear Axle")
-val spring = new Part ("Spring")
-val catConverter = new Part ("Catalytic Converter")
-val acceleratorCable = new Part ("Accelerator Cable")
-val seat = new Part ("Seat")
-val pedal = new Part ("Pedal")
-val vacuumPump = new Part ("Vacuum Pump")
-val calipers = new Part ("Calipers")
+val gearbox = new Part("Gearbox")
+val exhaust = new Part("Exhaust")
+val key = new Part("Key")
+val transmission = new Part("Transmission")
+val fuelTank = new Part("Fuel Tank")
+val indicator = new Part("Indicators")
+val brakeLight = new Part("Brake Light")
+val battery = new Part("Battery")
+val suspension = new Part("Suspension")
+val filtration = new Part("Filtration")
+val brakes = new Part("Brakes")
+val pistonRing = new Part("Piston Ring")
+val sumpPlug = new Part("Sump Plug")
+val timingBelt = new Part("Timing Belt")
+val oilPump = new Part("Oil Pump")
+val turboCharger = new Part("Turbo Charger")
+val pulley = new Part("Pulley")
+val headBolt = new Part("Head Bolt")
+val fuelInjector = new Part("Fuel Injector")
+val starterMotor = new Part("Starter Motor")
+val alternator = new Part("Alternator")
+val rearAxle = new Part("Rear Axle")
+val spring = new Part("Spring")
+val catConverter = new Part("Catalytic Converter")
+val acceleratorCable = new Part("Accelerator Cable")
+val seat = new Part("Seat")
+val pedal = new Part("Pedal")
+val vacuumPump = new Part("Vacuum Pump")
+val calipers = new Part("Calipers")
 
 
 val employee1 = new Employee("Adam", "Dye", "15/02/1993", "808", "The Heart,", "Salford", "M50 T36", "adamdye@email.com", "07935378321", 101, "Director")
 
 val customer1 = new Customer("James", "Gallagher", "17/08/1995", "26", "Manc Road", "Manchester", "M06 L45", "jamesgallaghere@email.com", "0765287931", 236)
 
-val bike1 = new Bike("Yamaha M697", "YU65 M5G", 2, "Black", true)
+val bike1 = new Bike("Yamaha M697", "YU65 M5G", 2, "Black")
 
-val car1 = new Car("Renault Clio", "JY15", 4, "Blue", false, 5)
+val car1 = new Car("Renault Clio", "JY15", 4, "Blue", 5)
 
-
+car1.parts.foreach(println)
 /*garage.addEmployee(employee1)
 
 garage.removeVehicleId(201)
@@ -54,6 +54,8 @@ garage.removeVehicleId(201)
 garage.removeVehicleType("Car")*/
 
 garage.repairVehicle(bike1)
+
+bike1.parts.foreach(println)
 
 garage.printContents()
 
@@ -118,21 +120,21 @@ abstract class Vehicle() {
   val reg: String
   var tyres: Int
   var colour: String
-  var repaired: Boolean
   var parts = scala.collection.mutable.ArrayBuffer.empty[Part]
   parts = partArrayBuffer
-  parts.foreach(f = x => {
+  parts.foreach(x => {
     x.price = 10 + r.nextInt(40)
     x.time = 1 + r.nextInt(9)
+    x.isBroken = math.random < 0.50
   })
-    garage.addVehicle(this)
+
+  garage.addVehicle(this)
 }
 
 class Bike(val model: String,
            val reg: String,
            var tyres: Int,
-           var colour: String,
-           var repaired: Boolean
+           var colour: String
           ) extends Vehicle() {
   override def toString: String = {
     s" ID: $id Model: $model. Registration Number: $reg. Number of Tyres: $tyres. Colour: $colour"
@@ -143,7 +145,6 @@ class Car(val model: String,
           val reg: String,
           var tyres: Int,
           var colour: String,
-          var repaired: Boolean,
           val doors: Int
          ) extends Vehicle() {
   override def toString: String = {
@@ -171,13 +172,16 @@ class Garage(var isOpen: Boolean = false) {
   }
 
   def repairVehicle(vehicle: Vehicle): Unit = {
-    if (vehicle.repaired) {
-      println("The vehicle has been repaired.")
-    }
-    else {
-      println("The vehicle has not been repaired.")
-    }
-
+    var price: Int = 0
+    var hours: Int = 0
+    vehicle.parts.foreach(x => {
+      if (x.isBroken) {
+        price += x.price
+        hours += x.time
+        x.isBroken = false
+      }
+    })
+    println(s"This vehicle will take $hours hours and will cost £$price")
   }
 
   def addEmployee(employee: Employee): Unit = {
@@ -205,12 +209,20 @@ class Garage(var isOpen: Boolean = false) {
   }
 }
 
-class Part (val name: String) {
-  var price = 10 + r.nextInt(40)
-  var time = 1 + r.nextInt(9)
+class Part(val name: String) {
+  var price = 0
+  var time = 0
   var isBroken: Boolean = false
   partArrayBuffer += this
-  override def  toString: String = {
-    s"Part Name: $name. Price: £$price. Time: $time hours."
+
+  override def toString: String = {
+    var printParts: String = s"Part Name: $name. Price: £$price. Time: $time hours."
+    if (isBroken) {
+      printParts += "This part is broken"
+    }
+    else {
+      printParts +=  "This part is fixed"
+    }
+    return printParts
   }
 }
